@@ -5,12 +5,17 @@ import { ReactComponent as SunIcon } from 'assets/icon-sun.svg'
 import styles from './ThemeSwitcher.module.scss'
 
 export const ThemeSwitcher = () => {
-  const [isDark, setIsDark] = useState(false)
+  const storageTheme: boolean = JSON.parse(
+    String(localStorage.getItem('theme'))
+  )
+
+  const [isDark, setIsDark] = useState(storageTheme)
   const themeText = isDark ? 'Light' : 'Dark'
   const ThemeIcon = isDark ? SunIcon : MoonIcon
 
   useEffect(() => {
     document.body.setAttribute('data-theme', isDark ? 'dark' : 'light')
+    localStorage.setItem('theme', JSON.stringify(isDark))
   }, [isDark])
 
   return (

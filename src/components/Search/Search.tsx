@@ -1,28 +1,42 @@
-import { FormEvent } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { ReactComponent as SearchIcon } from '../../assets/icon-search.svg'
+import { useDebounce } from 'usehooks-ts'
 
 import styles from './search.module.scss'
 import { Button } from '../Button'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { fetchUser } from 'redux/slice/userSlice'
 
-interface ISearch {
-  hasError: boolean
-  onSubmit: (text: string) => void
-}
+// type FormFields = {
+//   username: HTMLInputElement
+// }
 
-type FormFields = {
-  username: HTMLInputElement
-}
+export const Search = () => {
+  const dispatch = useAppDispatch()
+  const isUser = useAppSelector(state => state.user.user)
+  const [message, setMessage] = useState(false)
+  const [input, setInput] = useState('')
+  const debouncedValue = useDebounce<string>(input, 500)
 
-export const Search = ({ hasError, onSubmit }: ISearch) => {
-  const onSubmitHandler = (event: FormEvent<HTMLFormElement & FormFields>) => {
+  const onSubmitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const text = event.currentTarget.username.value
+    // const text = event.currentTarget.username.value
 
-    if (text) {
-      onSubmit(text)
-      event.currentTarget.reset()
+    if (input.trim()) {
+      dispatch(fetchUser(input))
+      // event.currentTarget.reset()
+      setInput('')
     }
   }
+
+  useEffect(() => {
+    if (debouncedValue.trim()) {
+      setMessage(false)
+    } else {
+      setMessage(true)
+    }
+    dispatch(fetchUser(debouncedValue))
+  }, [debouncedValue])
 
   return (
     <form onSubmit={onSubmitHandler} autoComplete='off'>
@@ -34,11 +48,12 @@ export const Search = ({ hasError, onSubmit }: ISearch) => {
           type='text'
           className={styles.textField}
           id='search'
-          name='username'
           placeholder='Type username in github'
+          value={input}
+          onChange={event => setInput(event.target.value)}
         />
-        {hasError && <div className={styles.error}>No result</div>}
-        <Button>Search</Button>
+        {!isUser && <div className={styles.error}>No result</div>}
+        <Button disabled={message}>Search</Button>
       </div>
     </form>
   )

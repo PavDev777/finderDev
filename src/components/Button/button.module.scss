@@ -9,6 +9,11 @@
   cursor: pointer;
 
   &:hover {
-    background-color: var(--main-color-hover)
+    background-color: var(--main-color-hover);
   }
+}
+
+.disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
 }

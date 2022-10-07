@@ -1,0 +1,20 @@
+:global {
+  body[data-theme='light'] {
+    --loader-color: var(--main-color);
+  }
+  body[data-theme='dark'] {
+    --loader-color: var(--white);
+  }
+}
+
+.loader {
+  display: block;
+  margin: 3rem 0 0;
+
+  circle {
+    stroke: var(--loader-color);
+  }
+  line {
+    stroke: var(--loader-color);
+  }
+}
