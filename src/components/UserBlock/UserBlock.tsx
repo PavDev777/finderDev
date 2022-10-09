@@ -1,17 +1,14 @@
 import { Loader } from 'components/Loader/Loader'
 import { UserCard } from 'components/UserCard'
-import { FC, useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { fetchUser } from 'redux/slice/userSlice'
+import { FC } from 'react'
+import { useAppSelector } from 'redux/hooks'
+import { LocalGithubUser } from '../../types'
 
 export const UserBlock: FC = () => {
-  const user = useAppSelector(state => state.user.user)
-  const loading = useAppSelector(state => state.user.loading)
-  const dispatch = useAppDispatch()
+  const user = useAppSelector(
+    state => state.userReducer.user
+  ) as LocalGithubUser
+  const loading = useAppSelector(state => state.userReducer.loading)
 
-  useEffect(() => {
-    dispatch(fetchUser('pavdev777'))
-  }, [dispatch])
-
-  return <>{loading ? <Loader /> : user && <UserCard {...user} />}</>
+  return <>{loading ? <Loader /> : user?.avatar && <UserCard {...user} />}</>
 }

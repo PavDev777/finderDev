@@ -7,14 +7,12 @@ interface IButton {
   disabled?: boolean
 }
 
-export const Button = ({ children, onClick, disabled }: IButton) => {
-  return (
-    <button
-      className={`${styles.button} ${disabled ? styles.disabled : ''}  `}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  )
-}
+export const Button = ({ children, onClick, disabled }: IButton) => (
+  <button
+    className={`${styles.button} ${disabled ? styles.disabled : ''}  `}
+    onClick={onClick}
+    disabled={disabled}
+  >
+    {children}
+  </button>
+)

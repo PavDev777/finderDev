@@ -1,4 +1,4 @@
-import { LocalGithubUser, GithubUser } from '../types/user'
+import { LocalGithubUser, GithubUser, GithubError } from '../types/user'
 
 export const extractLocalUser = (user: GithubUser): LocalGithubUser => ({
   login: user.login,

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { RootState } from 'redux/store'
 import { GithubError, GithubUser, LocalGithubUser } from 'types'
-import { defaultUser } from 'mock'
 import { isGithubuser } from 'utils/typeguard'
 import { extractLocalUser } from 'utils/extract-local-user'
 
@@ -11,10 +10,11 @@ export const fetchUser = createAsyncThunk(
     if (username) {
       const response = await fetch(`https://api.github.com/users/${username}`)
       const user = (await response.json()) as GithubUser | GithubError
+
       if (isGithubuser(user)) {
         return extractLocalUser(user)
       } else {
-        return null
+        return user
       }
     } else {
       return null
@@ -23,14 +23,12 @@ export const fetchUser = createAsyncThunk(
 )
 
 interface IUserState {
-  user: LocalGithubUser | null
-  error: boolean
+  user: LocalGithubUser | GithubError | null
   loading: boolean
 }
 
 const initialState: IUserState = {
   user: null,
-  error: false,
   loading: false
 }
 
@@ -39,24 +37,19 @@ export const userSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchUser.pending, state => {
+    builder.addCase(fetchUser.pending, (state, action) => {
       state.loading = true
-      state.error = false
     })
-    builder.addCase(fetchUser.fulfilled, (state, action) => {
-      state.user = action.payload
-      state.error = false
+    builder.addCase(fetchUser.fulfilled, (state, { payload }) => {
+      state.user = payload
       state.loading = false
     })
-    builder.addCase(fetchUser.rejected, state => {
-      state.error = true
+    builder.addCase(fetchUser.rejected, (state, action) => {
       state.loading = true
     })
   }
 })
 
-export const {} = userSlice.actions
-
-export const users = (state: RootState) => state.user.user
+export const users = (state: RootState) => state.userReducer.user
 
 export default userSlice.reducer

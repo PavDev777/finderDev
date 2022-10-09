@@ -5,6 +5,6 @@ interface IContainer {
   children: ReactNode
 }
 
-export const Container: FC<IContainer> = ({ children }) => {
-  return <div className={styles.container}>{children}</div>
-}
+export const Container: FC<IContainer> = ({ children }) => (
+  <div className={styles.container}>{children}</div>
+)

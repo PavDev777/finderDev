@@ -6,6 +6,7 @@ import styles from './search.module.scss'
 import { Button } from '../Button'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { fetchUser } from 'redux/slice/userSlice'
+import { GithubError } from '../../types'
 
 // type FormFields = {
 //   username: HTMLInputElement
@@ -13,30 +14,24 @@ import { fetchUser } from 'redux/slice/userSlice'
 
 export const Search = () => {
   const dispatch = useAppDispatch()
-  const isUser = useAppSelector(state => state.user.user)
-  const [message, setMessage] = useState(false)
+  const isUser = useAppSelector(state => state.userReducer.user) as GithubError
+  const [clear, setClear] = useState(false)
   const [input, setInput] = useState('')
   const debouncedValue = useDebounce<string>(input, 500)
 
   const onSubmitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // const text = event.currentTarget.username.value
-
-    if (input.trim()) {
-      dispatch(fetchUser(input))
-      // event.currentTarget.reset()
-      setInput('')
-    }
+    setInput('')
   }
 
   useEffect(() => {
-    if (debouncedValue.trim()) {
-      setMessage(false)
+    if (input.trim()) {
+      setClear(false)
     } else {
-      setMessage(true)
+      setClear(true)
     }
     dispatch(fetchUser(debouncedValue))
-  }, [debouncedValue])
+  }, [debouncedValue, dispatch])
 
   return (
     <form onSubmit={onSubmitHandler} autoComplete='off'>
@@ -48,12 +43,14 @@ export const Search = () => {
           type='text'
           className={styles.textField}
           id='search'
-          placeholder='Type username in github'
+          placeholder='Type github username...'
           value={input}
           onChange={event => setInput(event.target.value)}
         />
-        {!isUser && <div className={styles.error}>No result</div>}
-        <Button disabled={message}>Search</Button>
+        {isUser?.message && (
+          <div className={styles.error}>{isUser.message}</div>
+        )}
+        <Button disabled={clear}>Clear</Button>
       </div>
     </form>
   )

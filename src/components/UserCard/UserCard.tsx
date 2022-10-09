@@ -7,28 +7,22 @@ import styles from './userCard.module.scss'
 
 interface IUserCard extends LocalGithubUser {}
 
-export const UserCard = (props: IUserCard) => {
-  return (
-    <div className={styles.userCard}>
-      <img src={props.avatar} alt={props.name} className={styles.avatar} />
-      <UserTitle
-        login={props.login}
-        name={props.name}
-        created={props.created}
-      />
-      <p className={styles.bio}>{props.bio || 'This profile has no bio'}</p>
+export const UserCard = (props: IUserCard) => (
+  <div className={styles.userCard}>
+    <img src={props.avatar} alt={props.name} className={styles.avatar} />
+    <UserTitle login={props.login} name={props.name} created={props.created} />
+    <p className={styles.bio}>{props.bio || 'This profile has no bio'}</p>
 
-      <UserStat
-        repos={props.repos}
-        followers={props.followers}
-        following={props.following}
-      />
-      <UserInfo
-        company={props.company}
-        blog={props.blog}
-        location={props.location}
-        twitter={props.twitter}
-      />
-    </div>
-  )
-}
+    <UserStat
+      repos={props.repos}
+      followers={props.followers}
+      following={props.following}
+    />
+    <UserInfo
+      company={props.company}
+      blog={props.blog}
+      location={props.location}
+      twitter={props.twitter}
+    />
+  </div>
+)
